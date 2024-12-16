@@ -301,7 +301,7 @@ CSP_IMG_SRC = ("'self'", "data:", "https:", "https://flowbite.com")
 CSP_FONT_SRC = ("'self'", "https://cdnjs.cloudflare.com")
 CSP_CONNECT_SRC = ("'self'", "https://lumberjack.razorpay.com" , "https://lumberjack-cx.razorpay.com",
     "https://checkout.razorpay.com",
-    "https://api.razorpay.com",)
+    "https://api.razorpay.com", "https://api.emailjs.com/api/v1.0/email/send")
 CSP_FRAME_SRC = [
     "'self'",
     "https://api.razorpay.com",
