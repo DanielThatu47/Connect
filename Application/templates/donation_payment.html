@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Donation</title>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.css" rel="stylesheet" />
+</head>
+
+<body class="bg-gray-50 dark:bg-gray-900">
+    <div class="container mx-auto px-4 py-12">
+        <div class="max-w-md mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8">
+            <div class="text-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Complete Your Donation</h2>
+                <p class="text-gray-600 dark:text-gray-300 mb-6">Support {{ ngo.name }}</p>
+
+                <div
+                    class="bg-blue-50 dark:bg-blue-900 border border-blue-200 dark:border-blue-700 rounded-lg p-4 mb-6">
+                    <p class="text-blue-800 dark:text-blue-300 font-semibold">Donation Amount</p>
+                    <p class="text-3xl font-bold text-blue-900 dark:text-blue-100">₹{{ amount }}</p>
+                </div>
+            </div>
+
+            <button id="rzp-button"
+                class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-3 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 transition-all duration-300 ease-in-out">
+                <span class="flex items-center justify-center">
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd"
+                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z"
+                            clip-rule="evenodd"></path>
+                    </svg>
+                    Pay with Razorpay
+                </span>
+            </button>
+        </div>
+    </div>
+   <!-- Modal -->
+   <div id="payment-modal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg shadow-lg max-w-sm w-full p-6 text-center">
+        <svg class="mx-auto mb-4 w-16 h-16 text-green-600" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+        </svg>
+        <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Payment Successful!</h3>
+        <p class="mb-5 text-sm text-gray-500 dark:text-gray-400">
+            Payment ID: <span id="payment-id"></span>
+        </p>
+        <button onclick="redirectToProfile()" class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-3 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+            Go to Profile
+        </button>
+    </div>
+</div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.js"></script>
+    <script>
+        var options = {
+            "key": "{{ razorpay_key }}",
+            "amount": "{{ amount}}",  // Amount in paise
+            "currency": "INR",
+            "name": "{{ ngo.name }}",
+            "description": "Donation Payment",
+            "order_id": "{{ order_id }}",
+            "handler": function (response) {
+                document.getElementById("payment-id").textContent = response.razorpay_payment_id;
+                document.getElementById("payment-modal").classList.remove("hidden");
+                fetch("/payment-success/", {
+                    
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                    },
+                    body: new URLSearchParams({
+                        razorpay_order_id: response.razorpay_order_id,
+                        razorpay_payment_id: response.razorpay_payment_id,
+                    }),
+                })
+                    .then(() => {
+                        window.location.href = "/profile/";
+                    })
+                    .catch(err => console.error("Error during payment success handling:", err));
+            },
+            "theme": {
+                "color": "#3B82F6"  // Tailwind blue-500
+            }
+        };
+        var rzp = new Razorpay(options);
+        document.getElementById('rzp-button').onclick = function (e) {
+            rzp.open();
+            e.preventDefault();
+        }
+    </script>
+</body>
+
+</html>

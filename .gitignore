@@ -1,0 +1,45 @@
+# Python
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.pdb
+*.log
+
+# Django stuff:
+*.log
+*.sqlite3
+*.db
+*.db-journal
+media/
+static/
+
+# Virtual environment
+venv/
+.env/
+.env.* 
+
+# JetBrains project files
+.idea/
+
+# VSCode project files
+.vscode/
+
+# PyCharm project files
+.idea/
+
+# macOS system files
+.DS_Store
+
+# Windows system files
+Thumbs.db
+
+# Render/Heroku/Cloud deployment files
+*.bak
+
+# AWS S3 or any external storage files (e.g., for production)
+*.env
+
+# MongoDB related files if any (e.g., MongoDB dumps or backups)
+*.bson
+*.json

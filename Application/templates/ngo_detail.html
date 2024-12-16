@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Updated NGO Header Section -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden mb-8">
+        <div class="relative h-96">
+            <!-- Main Image -->
+            <img src="{{ MEDIA_URL }}{{ ngo.image }}" alt="{{ ngo.name }}" 
+                 class="absolute inset-0 w-full h-full object-cover">
+        
+            <!-- Text Content -->
+            <div class="absolute bg-gray-900/80 bottom-0 left-0 right-0 p-8">
+                <div class="relative inline-block 
+                            backdrop-blur-lg 
+                            bg-gray-900/80
+                            dark:bg-gray-900/80
+                            rounded-lg p-6 
+                            ring-1 ring-white/20 
+                            shadow-lg">
+                    <!-- Title -->
+                    <h1 class="text-4xl font-bold text-white mb-4 
+                               relative z-10">
+                        {{ ngo.name }}
+                    </h1>
+                    <div class="flex flex-wrap items-center gap-4 relative z-10">
+                        <!-- Category Tag -->
+                        <span class="inline-flex items-center rounded-full 
+                                    bg-gray-900/60 backdrop-blur-lg
+                                    dark:bg-gray-800/90
+                                    px-4 py-1.5 
+                                    text-sm font-medium text-white
+                                    ring-1 ring-white/20">
+                            <i class="fas fa-tag mr-2"></i>
+                            {{ ngo.category }}
+                        </span>
+                        <!-- Location Tag -->
+                        <span class="inline-flex items-center rounded-full 
+                                    bg-gray-900/60 backdrop-blur-sm
+                                    dark:bg-gray-800/90
+                                    px-4 py-1.5 
+                                    text-sm font-medium text-white
+                                    ring-1 ring-white/20">
+                            <i class="fas fa-map-marker-alt mr-2"></i>
+                            {{ ngo.address }}
+                        </span>
+                    </div>
+                </div>
+            </div>   
+        </div>
+    </div>
+
+    <!-- NGO Content Section -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Main Content -->
+        <div class="lg:col-span-2">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-8">
+                <h2 class="text-2xl font-semibold mb-4 text-gray-900 dark:text-white">About Us</h2>
+                <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
+                    {{ ngo.description }}
+                </p>
+            </div>
+
+            <!-- Mission & Vision -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-bullseye text-2xl text-blue-600 dark:text-blue-400 mr-3"></i>
+                        <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Our Mission</h3>
+                    </div>
+                    <p class="text-gray-700 dark:text-gray-300">
+                        {{ ngo.mission}}
+                    </p>
+                </div>
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-eye text-2xl text-blue-600 dark:text-blue-400 mr-3"></i>
+                        <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Our Vision</h3>
+                    </div>
+                    <p class="text-gray-700 dark:text-gray-300">
+                        {{ ngo.vision}}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="lg:col-span-1">
+            <!-- Contact Card -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
+                <h3 class="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Contact Information</h3>
+                <div class="space-y-4">
+                    <div class="flex items-center">
+                        <i class="fas fa-envelope text-blue-600 dark:text-blue-400 w-6"></i>
+                        <span class="ml-3 text-gray-700 dark:text-gray-300">{{ ngo.email}}</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-phone text-blue-600 dark:text-blue-400 w-6"></i>
+                        <span class="ml-3 text-gray-700 dark:text-gray-300">+91 {{ ngo.contact_number}}</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-map-marker-alt text-blue-600 dark:text-blue-400 w-6"></i>
+                        <span class="ml-3 text-gray-700 dark:text-gray-300">{{ ngo.address }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+                <h3 class="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Get Involved</h3>
+                <div class="space-y-4">
+                    <button class="w-full flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200">
+                        <i class="fas fa-hands-helping mr-2"></i>
+                        <a href="{{ ngo.website }}"> Volunteer Now</a>
+                    </button>
+                    <button class="w-full flex items-center justify-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200">
+                        <i class="fas fa-donate mr-2"></i>
+                        <a href="{% url 'donate' ngo.id %}">Donate Now
+                    </button>
+                    
+                </a>
+                    <button class="w-full flex items-center justify-center px-4 py-2 border border-blue-600 text-blue-600 dark:text-blue-400 dark:border-blue-400 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors duration-200">
+                        <i class="fas fa-share-alt mr-2"></i>
+                        Share
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

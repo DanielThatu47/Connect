@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Connect{% endblock %}</title>
+    
+    <!-- Stylesheets -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.1/dist/flowbite.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/flowbite@2.5.1/dist/flowbite.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+    <!-- Theme Script -->
+    <script>
+        if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        }
+    </script>
+</head>
+
+<body class="bg-gray-100 dark:bg-gray-900">
+    <nav class="bg-white border-gray-200 dark:bg-gray-900">
+        <div class="max-w-screen-xxl flex flex-wrap items-center justify-between mx-3 p-2">
+            <!-- Logo -->
+            <a href="/main/" class="flex items-center space-x-3 rtl:space-x-reverse">
+                <img src="https://flowbite.com/docs/images/logo.svg" class="h-8" alt="Connect Logo" />
+                <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Connect</span>
+            </a>
+
+            <div class="flex items-center md:order-2 space-x-4">
+                <!-- Theme Toggle Switch -->
+                <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="theme-toggle" class="sr-only peer">
+                    <div class="relative w-20 h-10 bg-gray-200 rounded-full 
+                                peer-focus:outline-none peer-focus:ring-4 
+                                peer-focus:ring-blue-300 
+                                dark:peer-focus:ring-blue-800 
+                                dark:bg-gray-700 
+                                peer-checked:after:translate-x-full 
+                                rtl:peer-checked:after:-translate-x-full 
+                                after:content-[''] 
+                                after:absolute 
+                                after:top-[4px] 
+                                after:start-[4px] 
+                                after:bg-white 
+                                after:border-gray-300 
+                                after:border 
+                                after:rounded-full 
+                                after:h-8 
+                                after:w-8 
+                                after:transition-all 
+                                dark:border-gray-600 
+                                peer-checked:bg-blue-600">
+                        <!-- Sun icon -->
+                        <svg id="theme-toggle-light-icon" 
+                             class="absolute left-2 top-2 h-6 w-6 text-yellow-400 transition-opacity opacity-100 dark:opacity-0" 
+                             fill="currentColor" 
+                             viewBox="0 0 20 20" 
+                             xmlns="http://www.w3.org/2000/svg">
+                            <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"></path>
+                        </svg>
+                        <!-- Moon icon -->
+                        <svg id="theme-toggle-dark-icon" 
+                             class="absolute right-2 top-2 h-6 w-6 text-gray-100 transition-opacity opacity-0 dark:opacity-100" 
+                             fill="currentColor" 
+                             viewBox="0 0 20 20" 
+                             xmlns="http://www.w3.org/2000/svg">
+                            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                        </svg>
+                    </div>
+                </label>
+
+                {% if request.session.user_id %}
+                <!-- User Avatar & Dropdown (Logged In) -->
+                <div class="relative">
+                    {% if avatar_url %}
+                    <img id="avatarButton" type="button" data-dropdown-toggle="userDropdown"
+                        class="w-10 h-10 rounded-full cursor-pointer"
+                        src="{{ avatar_url }}" alt="{{ user.name|slice:':1'|upper }}"
+                        onerror="this.style.display='none'; document.getElementById('fallbackAvatar').classList.remove('hidden');">
+                    {% else %}
+                    <div id="fallbackAvatar"
+                        class="flex items-center justify-center w-10 h-10 bg-blue-500 text-white font-bold rounded-full cursor-pointer"
+                        data-dropdown-toggle="userDropdown">
+                        {{ user.name|slice:':1'|upper }}
+                    </div>
+                    {% endif %}
+
+                    <!-- User Dropdown Menu -->
+                    <div id="userDropdown" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
+                        <div class="px-4 py-3 text-sm text-gray-900 dark:text-white">
+                            <div>{{ user.name }}</div>
+                            <div class="font-medium truncate">{{ user.email }}</div>
+                        </div>
+                        <ul class="py-2 text-sm text-gray-700 dark:text-gray-200">
+                            <li><a href="{% url 'profile' %}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Dashboard</a></li>
+                            <li><a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Settings</a></li>
+                            {% if user.is_ngo %}
+                            <li><a href="{% url 'ngo_dashboard' %}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">NGO Dashboard</a></li>
+                            {% endif %}
+                        </ul>
+                        <div class="py-1">
+                            <a href="{% url 'logout' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Sign out</a>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <!-- Login/Register Links (Logged Out) -->
+                <div class="flex items-center space-x-4">
+                    <a href="{% url 'login' %}" class="text-gray-800 dark:text-white hover:text-blue-600 dark:hover:text-blue-400">Login</a>
+                    <a href="{% url 'register' %}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">Register</a>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Navigation Links -->
+            <div class="hidden w-full md:block md:w-auto lg:ml-20" id="navbar-default">
+                <ul class="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
+                    <li><a href="/main/" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Home</a></li>
+                    <li><a href="{% url 'about' %}" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">About</a></li>
+                    {% if request.session.user_id %}
+                    <li><a href="{% url 'search_ngos' %}" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Search NGOs</a></li>
+                    {% endif %}
+                    <li><a href="{% url 'contactus' %}" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4 py-8">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="bg-white dark:bg-gray-900 py-4 mt-8">
+        <div class="container mx-auto px-4 text-center text-gray-600 dark:text-gray-400">
+            <p>&copy; 2023 Connect. All rights reserved.</p>
+            <div class="mt-2">
+                <a href="#" class="hover:underline mr-4">Privacy Policy</a>
+                <a href="#" class="hover:underline mr-4">Terms of Service</a>
+                <a href="{% url 'contactus' %}" class="hover:underline">Contact Us</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Updated Theme Toggle Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeToggle = document.getElementById('theme-toggle');
+            const lightIcon = document.getElementById('theme-toggle-light-icon');
+            const darkIcon = document.getElementById('theme-toggle-dark-icon');
+            
+            // Set initial state
+            if (localStorage.getItem('color-theme') === 'dark' || 
+                (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                themeToggle.checked = true;
+                document.documentElement.classList.add('dark');
+            }
+
+            // Toggle theme with animation
+            themeToggle.addEventListener('change', function() {
+                if (this.checked) {
+                    document.documentElement.classList.add('dark');
+                    localStorage.setItem('color-theme', 'dark');
+                    lightIcon.classList.remove('opacity-100');
+                    lightIcon.classList.add('opacity-0');
+                    darkIcon.classList.remove('opacity-0');
+                    darkIcon.classList.add('opacity-100');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    localStorage.setItem('color-theme', 'light');
+                    darkIcon.classList.remove('opacity-100');
+                    darkIcon.classList.add('opacity-0');
+                    lightIcon.classList.remove('opacity-0');
+                    lightIcon.classList.add('opacity-100');
+                }
+            });
+        });
+    </script>
+<script src="http://localhost:8000/__reload__/reload.js"></script>
+
+    {% block extra_scripts %}{% endblock %}
+</body>
+
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.1/dist/flowbite.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://cdn.jsdelivr.net/npm/flowbite@2.5.1/dist/flowbite.min.css" rel="stylesheet">
+    <style>
+        .password-toggle {
+            top: 12px; /* Adjust this value as needed */
+            right: 10px;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="min-h-screen flex items-center justify-center">
+        <div class="bg-white p-8 rounded-lg shadow-md w-96">
+            <h2 class="text-2xl font-bold mb-6 text-center">Admin Login</h2>
+            <form method="POST"  class="space-y-6 md:space-y-7">
+                {% csrf_token %}
+                <div id="form_errors">
+                    {% for field in form %}
+                        {% if field.errors %}
+                            <strong style="color: red;">{{ field.errors }}</strong>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <div class="mb-4">
+                    <label for="admin-login-email" class="block text-sm font-medium text-gray-700">Email</label>
+                    {{ form.email }}
+                </div>
+                <div class="mb-6 relative">
+                    <label for="admin-login-password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                    <div class="relative">
+                        {{ form.password }}
+                        <span class="password-toggle absolute flex items-center cursor-pointer"
+                              onclick="togglePassword('admin-login-password')">
+                            <i id="eye-icon-admin-login-password" class="fas fa-eye text-blue-500 dark:text-blue-400"></i>
+                        </span>
+                    </div>
+                </div>
+                <button type="submit" class="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300">
+                    Login
+                </button>
+            </form>
+        </div>
+    </div>
+    <script>
+        function togglePassword(fieldId) {
+            const passwordField = document.getElementById(fieldId);
+            const eyeIcon = document.getElementById(`eye-icon-${fieldId}`);
+
+            if (passwordField && eyeIcon) {
+                if (passwordField.type === 'password') {
+                    passwordField.type = 'text';
+                    eyeIcon.classList.remove('fa-eye');  // Remove eye icon
+                    eyeIcon.classList.add('fa-eye-slash');  // Add eye-slash icon
+                } else {
+                    passwordField.type = 'password';
+                    eyeIcon.classList.remove('fa-eye-slash');  // Remove eye-slash icon
+                    eyeIcon.classList.add('fa-eye');  // Add eye icon
+                }
+            } else {
+                console.error("Password field or eye icon not found.");
+            }
+        }
+    </script>
+</body>
+</html>

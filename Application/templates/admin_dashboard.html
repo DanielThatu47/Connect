@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Connect</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Custom styles for improved table responsiveness */
+        .table-responsive {
+            overflow-x: auto;
+            max-width: 100%;
+            width: 100%;
+        }
+        .description-cell {
+            max-width: 250px;
+            min-width: 150px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        @media (max-width: 768px) {
+            .mobile-hide {
+                display: none;
+            }
+            .table-responsive {
+                overflow-x: scroll;
+            }
+            .description-cell {
+                max-width: 120px;
+            }
+            .responsive-stack {
+                display: flex;
+                flex-direction: column;
+            }
+            .responsive-stack > * {
+                margin-bottom: 0.25rem;
+                margin-right: 0;
+            }
+            .container {
+                padding-left: 0.5rem;
+                padding-right: 0.5rem;
+            }
+        }
+        /* Ensure full width and responsive layout */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 dark:text-white transition-colors duration-300">
+    <!-- Navbar -->
+    <nav class="bg-white border-gray-200 dark:bg-gray-900">
+        <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+            <a href="{% url 'admin_dashboard' %}" class="flex items-center">
+                <span class="self-center text-2xl font-bold whitespace-nowrap dark:text-blue">Connect Admin</span>
+            </a>
+            <button data-collapse-toggle="navbar-default" type="button" class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="navbar-default" aria-expanded="false">
+                <span class="sr-only">Open main menu</span>
+                <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15"/>
+                </svg>
+            </button>
+            <div class="hidden w-full md:block md:w-auto" id="navbar-default">
+                <ul class="font-medium flex flex-col p-8 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
+                    <li>
+                        <a href="#" class="block py-2 pl-3 pr-4 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white md:dark:text-blue-500" aria-current="page">Dashboard</a>
+                    </li>
+                    <li>
+                        <a href="#" class="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Users</a>
+                    </li>
+                    <li>
+                        <a href="/main/" class="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">NGOs</a>
+                    </li>
+                    <li>
+                        <a href="#" class="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Settings</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'admin_logout' %}" class="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Logout</a>
+                    </li>
+                    <li>
+                        {% include 'theme.html' %}
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto px-4 py-8">
+        <!-- Dashboard Cards -->
+        <div class="dashboard-grid">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                <h3 class="text-xl font-semibold mb-4">Total Users</h3>
+                <p class="text-3xl font-bold">{{ total_users }}</p>
+            </div>
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                <h3 class="text-xl font-semibold mb-4">Total NGOs</h3>
+                <p class="text-3xl font-bold">{{ total_ngos }}</p>
+            </div>
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                <h3 class="text-xl font-semibold mb-4">Add New NGO</h3>
+                <a href="{% url 'add_ngo' %}" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
+                    Add NGO
+                </a>
+            </div>
+        </div>
+
+         <!-- Recent Users Table -->
+         <div class="mt-8 relative overflow-x-auto shadow-md sm:rounded-lg">
+            <h2 class="text-2xl font-bold mb-4 px-4 text-center pt-4">Recent Users</h2>
+            <table class="w-full text-sm  text-left text-gray-500 dark:text-gray-400">
+                <thead class="text-xs text-gray-700 uppercase bg-green-300 dark:bg-gray-700 dark:text-gray-400">
+                    <tr>
+                        <th scope="col" class="px-6 py-3">Name</th>
+                        <th scope="col" class="px-6 py-3 mobile-hide">Email</th>
+                        <th scope="col" class="px-6 py-3">Joined</th>
+                        <th scope="col" class="px-6 py-3 mobile-hide">Auth Method</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user_data in recent_users %}
+                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                        <td class="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap">
+                            {{ user_data.user.name }}
+                        </td>
+                        <td class="px-6 py-4 mobile-hide">{{ user_data.user.email }}</td>
+                        <td class="px-6 py-4">{{ user_data.user.created_at|date:"M d, Y" }}</td>
+                        <td class="px-6 py-4 mobile-hide">{{ user_data.auth_method }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+          <!-- All NGOs Table -->
+          <div class="mt-8 relative rounded-sm overflow-x-auto shadow-md sm:rounded-lg">
+            <h2 class="text-2xl font-bold mb-4 text-center px-4 pt-4">All NGOs</h2>
+            <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                <thead class="text-xs bg-green-300 text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                    <tr>
+                        <th scope="col" class="px-6 py-3">Name</th>
+                        <th scope="col" class="px-6 py-3 max-w-xs truncate">Description</th>
+                        <th scope="col" class="px-6 py-3 mobile-hide">Created At</th>
+                        <th scope="col" class="px-6 py-3">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ngo in all_ngos %}
+                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                        <td class="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap">
+                            {{ ngo.name }}
+                        </td>
+                        <td class="px-6 py-4 max-w-xs truncate" title="{{ ngo.description }}">
+                            {{ ngo.description|truncatewords:10 }}
+                        </td>
+                        <td class="px-6 py-4 mobile-hide">{{ ngo.created_at|date:"M d, Y" }}</td>
+                        <td class="px-6 py-4 responsive-stack">
+                            <div class="inline-flex rounded-md shadow-sm" role="group">
+                                <a href="#" 
+                                   class="inline-flex items-center px-4 py-2 text-sm font-medium text-red-600 bg-white border border-gray-200 rounded-l-lg hover:bg-gray-100 hover:text-red-700 focus:z-10 focus:ring-2 focus:ring-red-700 focus:text-red-700 dark:bg-gray-800 dark:border-gray-700 dark:text-red-500 dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-red-500 dark:focus:text-white"
+                                   onclick="openModal('{{ ngo.id }}'); return false;">
+                                    <i class="fas fa-trash-alt mr-2"></i>Delete
+                                </a>
+                                <a href="{% url 'edit_ngo' ngo.id %}" 
+                                   class="inline-flex items-center px-4 py-2 text-sm font-medium text-blue-600 bg-white border-t border-b border-r border-gray-200 rounded-r-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-blue-500 dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
+                                    <i class="fas fa-edit mr-2"></i>Edit
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" tabindex="-1" aria-hidden="true" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 overflow-x-hidden overflow-y-auto bg-black bg-opacity-50">
+        <div class="relative w-full max-w-md">
+            <div class="bg-white rounded-lg shadow dark:bg-gray-700">
+                <div class="p-6 text-center">
+                    <i class="fas fa-trash-alt text-red-600 text-6xl mb-4"></i>
+                    <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Are you sure you want to delete this NGO?</h3>
+                    <button id="confirmDelete" type="button" class="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">Yes, I'm sure</button>
+                    <button type="button" class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-600" onclick="closeModal()">No, cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let ngoIdToDelete = null;
+
+        function openModal(ngoId) {
+            ngoIdToDelete = ngoId;
+            document.getElementById('deleteModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('deleteModal').classList.add('hidden');
+        }
+
+        document.getElementById('confirmDelete').addEventListener('click', function() {
+            if (ngoIdToDelete) {
+                const deleteUrl = `/admin/delete_ngo/${ngoIdToDelete}/`;
+                window.location.href = deleteUrl;
+            }
+        });
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.js"></script>
+</body>
+</html>

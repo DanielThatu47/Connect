@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+
+
+{% block content %}
+<header class="bg-sky-400 text-gray-900 py-6 px-4">
+    {% if user %}
+        <div class="flex justify-end mb-4">
+            {% if avatar_url %}
+                <img src="{{ avatar_url }}" alt="User Avatar" class="w-10 h-10 rounded-full">
+            {% endif %}
+        </div>
+    {% endif %}
+    <h1 class="text-4xl font-bold dark:text-white text-center">About Us</h1>
+</header>
+
+<main class="p-12 dark:text-white">
+    <!-- Loading Skeleton -->
+    <div id="loading-skeleton" class="animate-pulse">
+        <div class="h-10 bg-gray-300 rounded mb-4"></div>
+        <div class="h-6 bg-gray-300 rounded mb-2"></div>
+        <div class="h-6 bg-gray-300 rounded mb-2"></div>
+        <div class="h-6 bg-gray-300 rounded mb-2"></div>
+        <div class="h-6 bg-gray-300 rounded mb-2"></div>
+        <div class="h-6 bg-gray-300 rounded mb-2"></div>
+    </div>
+
+    <!-- Actual Content -->
+    <div id="about-content" class="hidden dark:text-white">
+        <h2 class="text-2xl font-semibold mb-6">
+            Hello, you 👋🏻 Social service has always been of a great deal to mankind
+            so here we are, a group of 4 students who came together from 4 different
+            walks of life after hours of brainstorming have come up with a way to
+            help society and also you. Hence, we bring to you this website that's
+            specially curated for NGOs so you can find the NGO you like and learn
+            about them, join an NGO, provide monetary help or probably verbal you
+            name it or maybe start your own NGO?🫣 Either ways we're really happy
+            you're here with us and can't wait to see your journey unfold. Happy
+            wishes and good luck from us🍀
+        </h2>
+        <h2 class="text-2xl font-semibold dark:text-white mt-8">Regards,</h2>
+        <h2 class="text-2xl font-semibold dark:text-white">Team Connect.</h2>
+    </div>
+</main>
+
+<script>
+    // Simulate loading delay
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(function() {
+            // Hide loading skeleton and show content
+            document.getElementById('loading-skeleton').classList.add('hidden');
+            document.getElementById('about-content').classList.remove('hidden');
+        }, 1000); // Adjust the time as needed
+    });
+</script>
+{% endblock %}
