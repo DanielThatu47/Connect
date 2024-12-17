@@ -54,6 +54,6 @@ urlpatterns = [
     path('donate/<str:ngo_id>/', views.donate, name='donate'),
     path('payment-success/', views.payment_success, name='payment_success'),
     path('generate-receipt/', views.generate_receipt, name='generate_receipt'),
-    
+    path('view_receipt/<str:donation_id>/', views.view_receipt, name='view_receipt'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
