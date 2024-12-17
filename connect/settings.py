@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
    'django_extensions',
     'Application',
-    'django_browser_reload',
+    
    
 ]
 
