@@ -29,7 +29,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-d5yk&5o5e^kj!cuz*=jh6%3!tj!9^&e#)1@7%+&c(0j9q&e8-t'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['192.168.44.239', '0.0.0.0' ,'127.0.0.1' ,'*']
 
@@ -44,9 +44,10 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'django.contrib.staticfiles',
    'django_extensions',
     'Application',
-    
+    'django_browser_reload',
    
 ]
 
@@ -55,14 +56,13 @@ RUNSERVERPLUS_SERVER_RELOAD_HOOKS = ['watchman']
 
 MIDDLEWARE = [
        'django.middleware.security.SecurityMiddleware',
-       'django_browser_reload.middleware.BrowserReloadMiddleware',
        'django.contrib.sessions.middleware.SessionMiddleware',
        'django.middleware.common.CommonMiddleware',
        'django.middleware.csrf.CsrfViewMiddleware',  # Ensure this is included
        'django.contrib.auth.middleware.AuthenticationMiddleware',  # Place this before your middleware
        'django.contrib.messages.middleware.MessageMiddleware',
        'django.middleware.clickjacking.XFrameOptionsMiddleware',
-       'csp.middleware.CSPMiddleware',
+      
        'Application.middleware.guest_access.GuestAccessRestrictionMiddleware',
       
 
@@ -248,7 +248,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-
+STATIC_URL = 'static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -290,21 +290,7 @@ EMAIL_HOST_USER = 'danielthatu10@gmail.com'  # Your email
 EMAIL_HOST_PASSWORD = 'Daniel@#47'  # Your email app password
 
 
-# Content Security Policy settings
-CSP_DEFAULT_SRC = ("'self'", "https://api.razorpay.com",
-    "https://checkout.razorpay.com",)
-CSP_SCRIPT_SRC = ("'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com" , 
-                   "https://checkout.razorpay.com" , "https://api.razorpay.com" , "https://cdn.tailwindcss.com",)
-CSP_STYLE_SRC = ("'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com")
-CSP_IMG_SRC = ("'self'", "data:", "https:", "https://flowbite.com")
-CSP_FONT_SRC = ("'self'", "https://cdnjs.cloudflare.com")
-CSP_CONNECT_SRC = ("'self'", "https://lumberjack.razorpay.com" , "https://lumberjack-cx.razorpay.com",
-    "https://checkout.razorpay.com",
-    "https://api.razorpay.com", "https://api.emailjs.com/api/v1.0/email/send")
-CSP_FRAME_SRC = [
-    "'self'",
-    "https://api.razorpay.com",
-]
+
 
 
 #Razor Pay Settings
