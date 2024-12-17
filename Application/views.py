@@ -16,7 +16,8 @@ from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
-from django.http import Http404, JsonResponse ,HttpResponse
+from django.http import Http404, JsonResponse ,HttpResponse ,FileResponse
+import io
 from django.core.files.storage import FileSystemStorage ,default_storage
 from django.views.decorators.http import require_POST
 import re
@@ -917,3 +918,25 @@ def generate_receipt(donation, ngo, receipt_file):
 
     # Build the PDF
     doc.build(elements)
+
+
+@never_cache
+def view_receipt(request, donation_id):
+    user_id = request.session.get('user_id')
+    user = User.objects(id=user_id).first()
+    if not user:
+        return redirect('login')
+
+    try:
+        donation = Donation.objects.get(id=donation_id, user=user)
+    except Donation.DoesNotExist:
+        return HttpResponse('Receipt not found.', status=404)
+
+    receipt_buffer = io.BytesIO()
+    generate_receipt(donation, donation.ngo, receipt_buffer)
+    receipt_buffer.seek(0)
+
+    response = FileResponse(receipt_buffer, content_type='application/pdf')
+    response['Content-Disposition'] = 'inline; filename="receipt.pdf"'
+
+    return response
