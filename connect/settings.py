@@ -278,7 +278,7 @@ SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'  # or use cac
 
 # Optionally, enable longer session storage with database caching or external storage (like Redis)
 
-MEDIA_URL = 'https://connect-gf04.onrender.com/media/'
+MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Email settings
