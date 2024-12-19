@@ -101,7 +101,7 @@ CSRF_TRUSTED_ORIGINS = [
 ROOT_URLCONF = 'connect.urls'
 
 
-AUTH_USER_MODEL = 'Application.User'
+# AUTH_USER_MODEL = 'Application.User'
 
 
 TEMPLATES = [
