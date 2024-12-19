@@ -155,7 +155,7 @@
                     showToast('Login successful! Redirecting...', 'success');
                     setTimeout(() => {
                         window.location.href = response.url;
-                    }, 800);
+                    }, 400);
                 } else {
                     return response.text().then(html => {
                         // Check if there are form errors

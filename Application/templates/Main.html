@@ -75,7 +75,7 @@
     <a href="{% url 'ngo_detail' ngo_id=ngo.id %}" class="group" data-category="{{ ngo.category }}">
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden transition-all duration-300 transform hover:scale-105 hover:shadow-2xl group-hover:ring-2 group-hover:ring-blue-500 dark:group-hover:ring-blue-400">
             <div class="relative">
-                <img src='{{ MEDIA_URL }}{{ ngo.image }}' alt="{{ ngo.name }}" class="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-110">
+                <img src='{{ ngo.image }}' alt="{{ ngo.name }}" class="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-110">
                 <div class="absolute top-0 right-0 m-4">
                     <span class="inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-300">
                         <i class="fas fa-tag mr-2"></i>

@@ -6,7 +6,7 @@
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden mb-8">
         <div class="relative h-96">
             <!-- Main Image -->
-            <img src="{{ MEDIA_URL }}{{ ngo.image }}" alt="{{ ngo.name }}" 
+            <img src="{{ ngo.image }}" alt="{{ ngo.name }}" 
                  class="absolute inset-0 w-full h-full object-cover">
         
             <!-- Text Content -->
@@ -111,7 +111,7 @@
                 <div class="space-y-4">
                     <button class="w-full flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200">
                         <i class="fas fa-hands-helping mr-2"></i>
-                        <a href="{{ ngo.website }}"> Volunteer Now</a>
+                        <a href="{{ ngo.website }}" target="_blank"> Volunteer Now</a>
                     </button>
                     <button class="w-full flex items-center justify-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200">
                         <i class="fas fa-donate mr-2"></i>
