@@ -48,8 +48,24 @@ INSTALLED_APPS = [
    'django_extensions',
     'Application',
     'django_browser_reload',
+    'cloudinary_storage',  # Add Cloudinary storage app
+    'cloudinary',
    
 ]
+
+
+# Default file storage for media
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+# Cloudinary credentials
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.getenv('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': os.getenv('CLOUDINARY_API_KEY'),
+    'API_SECRET': os.getenv('CLOUDINARY_API_SECRET'),
+}
+
+# Optional: Media URL
+MEDIA_URL = 'https://res.cloudinary.com/drmlojk3o/'
 
 
 RUNSERVERPLUS_SERVER_RELOAD_HOOKS = ['watchman']
@@ -278,8 +294,8 @@ SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'  # or use cac
 
 # Optionally, enable longer session storage with database caching or external storage (like Redis)
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# MEDIA_URL = '/media/'
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Email settings
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
