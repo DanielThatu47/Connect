@@ -1,5 +1,5 @@
 # your_app_name/models.py
-from mongoengine import Document,ReferenceField, FloatField, StringField, EmailField, DateTimeField, BooleanField,ImageField ,FileField ,IntField
+from mongoengine import Document,ReferenceField, FloatField, StringField, EmailField, DateTimeField, BooleanField ,IntField ,URLField
 import bcrypt
 from datetime import datetime
 import random
@@ -17,7 +17,7 @@ class User(me.Document):
     password = me.StringField(required=True)
     created_at = DateTimeField(default=datetime.utcnow)
     profile_color = StringField(default=generate_random_color)  # New field for profile color
-    avatar = StringField()   # No `upload_to` in MongoEngine's FileField
+    avatar = URLField(null=True, blank=True)  # No `upload_to` in MongoEngine's FileField
     # avatar = ImageField(upload_to='avatars/')
     expire_at = me.DateTimeField()
 
@@ -55,7 +55,7 @@ class NGO(Document):
     name = StringField(required=True, max_length=100)
     description = StringField(required=True)
     address = StringField(required=True)
-    image = StringField()  # We'll store the image path here
+    image = URLField(null=True, blank=True)  # We'll store the image path here
     category = StringField(required=True)
     vision = StringField(required=True)
     mission = StringField(required=True)
