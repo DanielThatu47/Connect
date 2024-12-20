@@ -880,7 +880,6 @@ def view_receipt(request, donation_id):
     except Donation.DoesNotExist:
         return HttpResponse('Receipt not found.', status=404)
 
-    
     receipt_buffer = io.BytesIO()
     generate_receipt(donation, donation.ngo, receipt_buffer)
     receipt_buffer.seek(0)
@@ -888,3 +887,12 @@ def view_receipt(request, donation_id):
     response = FileResponse(receipt_buffer, content_type='application/pdf')
     response['Content-Disposition'] = 'inline; filename="receipt.pdf"'
 
+    # JavaScript to open the PDF in a new window and set the title
+    response.write(f"""
+    <script type="text/javascript">
+        var newWindow = window.open('', '_blank');
+        newWindow.document.title = 'Receipt - {donation.ngo.name}';
+        newWindow.document.body.innerHTML = '<embed src="data:application/pdf;base64,{receipt_buffer.getvalue().encode('base64')}" width="100%" height="100%">';
+    </script>
+    """)
+    return response
