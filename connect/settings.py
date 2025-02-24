@@ -31,7 +31,11 @@ SECRET_KEY = 'django-insecure-d5yk&5o5e^kj!cuz*=jh6%3!tj!9^&e#)1@7%+&c(0j9q&e8-t
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['https://connect-gf04.onrender.com','https://0.0.0.0','.now.sh']
+ALLOWED_HOSTS = [
+    'connect-gf04.onrender.com',
+    '0.0.0.0',
+    '.now.sh',  # Keep the existing ones
+]
 
 
 # Application definition
