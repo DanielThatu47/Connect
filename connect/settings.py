@@ -31,7 +31,7 @@ SECRET_KEY = 'django-insecure-d5yk&5o5e^kj!cuz*=jh6%3!tj!9^&e#)1@7%+&c(0j9q&e8-t
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['https://connect-gf04.onrender.com','0.0.0.0','.now.sh' , '*']
+ALLOWED_HOSTS = ['https://connect-gf04.onrender.com','0.0.0.0','.now.sh']
 
 
 # Application definition
@@ -90,7 +90,7 @@ MIDDLEWARE = [
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:8000',
     'http://127.0.0.1:8000',
-    'http://yourdomain.com',
+    'http://connect-gf04.onrender.com',
     'http://0.0.0.0:8000',
     'http://192.168.44.1:8000',
       'http://192.168.64.238:8000' , # Add this if you are accessing from this IP
