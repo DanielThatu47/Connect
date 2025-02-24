@@ -868,6 +868,11 @@ def generate_receipt(donation, ngo, receipt_file):
     doc.build(elements)
 
 
+
+import base64
+
+
+
 @never_cache
 def view_receipt(request, donation_id):
     user_id = request.session.get('user_id')
@@ -880,19 +885,52 @@ def view_receipt(request, donation_id):
     except Donation.DoesNotExist:
         return HttpResponse('Receipt not found.', status=404)
 
+    # Generate the receipt PDF into a buffer
     receipt_buffer = io.BytesIO()
     generate_receipt(donation, donation.ngo, receipt_buffer)
     receipt_buffer.seek(0)
+    
+    # Base64-encode the PDF data
+    pdf_data = base64.b64encode(receipt_buffer.getvalue()).decode('ascii')
 
-    response = FileResponse(receipt_buffer, content_type='application/pdf')
-    response['Content-Disposition'] = 'inline; filename="receipt.pdf"'
-
-    # JavaScript to open the PDF in a new window and set the title
-    response.write(f"""
-    <script type="text/javascript">
-        var newWindow = window.open('', '_blank');
-        newWindow.document.title = 'Receipt - {donation.ngo.name}';
-        newWindow.document.body.innerHTML = '<embed src="data:application/pdf;base64,{receipt_buffer.getvalue().encode('base64')}" width="100%" height="100%">';
-    </script>
-    """)
-    return response
+    # Tailwind CSS and a PDF icon (SVG) are added for styling.
+    html_content = f"""
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Receipt - {donation.ngo.name}</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+    </head>
+    <body class="bg-gray-100">
+      <div class="container mx-auto px-4 py-8">
+        <div class="bg-white rounded-lg shadow-lg p-6">
+          <div class="flex items-center mb-4">
+            <!-- PDF Icon -->
+            <svg class="w-12 h-12 text-red-500 mr-4" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M19 2H8a2 2 0 00-2 2v4H5a2 2 0 00-2 2v10a2 2 0 002 2h14a2 2 0 002-2V4a2 2 0 00-2-2zM8 4h11v5h-4a1 1 0 01-1-1V4zm11 16H5V10h1v2h12v-2h1z"/>
+            </svg>
+            <h1 class="text-2xl font-bold text-gray-800">Receipt - {donation.ngo.name}</h1>
+          </div>
+          <div class="mb-6">
+            <embed class="w-full h-96 border rounded" src="data:application/pdf;base64,{pdf_data}" type="application/pdf">
+          </div>
+          <div class="flex justify-end">
+            <a href="data:application/pdf;base64,{pdf_data}" download="receipt.pdf">
+              <button class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded inline-flex items-center">
+                <!-- Download Icon -->
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M3 14a1 1 0 011-1h3v-4a1 1 0 112 0v4h3a1 1 0 110 2H5a1 1 0 01-1-1z"/>
+                  <path d="M9 2a1 1 0 011 1v8.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 111.414-1.414L9 11.586V3a1 1 0 011-1z"/>
+                </svg>
+                <span>Download Receipt</span>
+              </button>
+            </a>
+          </div>
+        </div>
+      </div>
+    </body>
+    </html>
+    """
+    return HttpResponse(html_content)
