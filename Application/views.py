@@ -872,7 +872,6 @@ def generate_receipt(donation, ngo, receipt_file):
 import base64
 
 
-
 @never_cache
 def view_receipt(request, donation_id):
     user_id = request.session.get('user_id')
@@ -890,10 +889,10 @@ def view_receipt(request, donation_id):
     generate_receipt(donation, donation.ngo, receipt_buffer)
     receipt_buffer.seek(0)
     
-    # Base64-encode the PDF data
+    # Base64-encode the PDF data for embedding and download
     pdf_data = base64.b64encode(receipt_buffer.getvalue()).decode('ascii')
 
-    # Tailwind CSS and a PDF icon (SVG) are added for styling.
+    # Responsive design with Tailwind CSS to display a PDF preview across device sizes.
     html_content = f"""
     <!DOCTYPE html>
     <html lang="en">
@@ -904,19 +903,22 @@ def view_receipt(request, donation_id):
       <script src="https://cdn.tailwindcss.com"></script>
     </head>
     <body class="bg-gray-100">
-      <div class="container mx-auto px-4 py-8">
-        <div class="bg-white rounded-lg shadow-lg p-6">
-          <div class="flex items-center mb-4">
+      <div class="min-h-screen flex flex-col justify-center items-center p-4">
+        <div class="bg-white rounded-lg shadow-lg w-full max-w-4xl">
+          <div class="flex items-center p-4 border-b border-gray-200">
             <!-- PDF Icon -->
-            <svg class="w-12 h-12 text-red-500 mr-4" fill="currentColor" viewBox="0 0 24 24">
+            <svg class="w-10 h-10 text-red-500 mr-3" fill="currentColor" viewBox="0 0 24 24">
               <path d="M19 2H8a2 2 0 00-2 2v4H5a2 2 0 00-2 2v10a2 2 0 002 2h14a2 2 0 002-2V4a2 2 0 00-2-2zM8 4h11v5h-4a1 1 0 01-1-1V4zm11 16H5V10h1v2h12v-2h1z"/>
             </svg>
-            <h1 class="text-2xl font-bold text-gray-800">Receipt - {donation.ngo.name}</h1>
+            <h1 class="text-xl md:text-2xl font-bold text-gray-800">Receipt - {donation.ngo.name}</h1>
           </div>
-          <div class="mb-6">
-            <embed class="w-full h-96 border rounded" src="data:application/pdf;base64,{pdf_data}" type="application/pdf">
+          <div class="p-4">
+            <!-- PDF Preview: the embed container is made responsive -->
+            <div class="aspect-w-16 aspect-h-9 md:aspect-auto">
+              <embed class="w-full h-full border rounded" src="data:application/pdf;base64,{pdf_data}" type="application/pdf">
+            </div>
           </div>
-          <div class="flex justify-end">
+          <div class="p-4 border-t border-gray-200 flex justify-end">
             <a href="data:application/pdf;base64,{pdf_data}" download="receipt.pdf">
               <button class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded inline-flex items-center">
                 <!-- Download Icon -->
@@ -930,7 +932,18 @@ def view_receipt(request, donation_id):
           </div>
         </div>
       </div>
+      <!-- Tailwind CSS aspect ratio plugin for responsive embeds -->
+      <script>
+        // Ensures compatibility with browsers if aspect ratio plugin is needed
+        if (!('aspectRatio' in document.documentElement.style)) {{
+          var script = document.createElement('script');
+          script.src = "https://cdn.jsdelivr.net/npm/@tailwindcss/aspect-ratio@0.4.0/dist/aspect-ratio.min.js";
+          document.head.appendChild(script);
+        }}
+      </script>
     </body>
     </html>
     """
     return HttpResponse(html_content)
+
+
