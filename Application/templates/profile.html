@@ -238,41 +238,219 @@
     </div>
 
     {% block scripts %}
+    
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const avatarInput = document.getElementById('avatar');
-            const avatarForm = document.getElementById('avatar-form');
-            const avatarContainer = document.getElementById('avatar-container');
+@@ -247,213 +246,33 @@ <h2 class="text-3xl text-center dark:text-white font-bold text-gray-900 mb-8">
             const deleteAvatarForm = document.getElementById('delete-avatar-form');
             const avatarPreview = document.getElementById('avatar-preview');
 
-            if (avatarPreview) {
-                avatarPreview.addEventListener('contextmenu', function (e) {
-                    e.preventDefault(); // Prevent the context menu from appearing
-                });
-            }
+                                if (avatarPreview) {
+                                    avatarPreview.addEventListener('contextmenu', function (e) {
+                                        e.preventDefault(); // Prevent the context menu from appearing
+                                    });
+                                }
 
-            function updateAvatarPreview(imageUrl) {
-                avatarContainer.innerHTML = `<img id="avatar-preview" src="${imageUrl}" alt="Profile Picture" class="w-full h-full object-cover">`;
-            }
 
-            function showFallbackAvatar() {
-                avatarContainer.innerHTML = `
+                                function updateAvatarPreview(imageUrl) {
+                                    avatarContainer.innerHTML = `<img id="avatar-preview" src="${imageUrl}" alt="Profile Picture" class="w-full h-full object-cover">`;
+                                }
+
+                                function showFallbackAvatar() {
+                                    avatarContainer.innerHTML = `
                     <div id="fallback-avatar" class="w-full h-full flex items-center justify-center bg-blue-500 text-7xl text-white font-bold">
                         {{ user.name|slice:':1'|upper }}
                     </div>
                 `;
             }
 
-            if (avatarInput) {
-                avatarInput.addEventListener('change', function (event) {
-                    const file = event.target.files[0];
-                    if (file) {
-                        const reader = new FileReader();
-                        reader.onload = function (e) {
-                            updateAvatarPreview(e.target.result);
-                        }
-                        reader.readAsDataURL(file);
+                                if (avatarInput) {
+                                    avatarInput.addEventListener('change', function (event) {
+                                        const file = event.target.files[0];
+                                        if (file) {
+                                            const reader = new FileReader();
+                                            reader.onload = function (e) {
+                                                updateAvatarPreview(e.target.result);
+                                            }
+                                            reader.readAsDataURL(file);
 
-                        const formData = new FormData(avatarForm);
-                        fetch('{% url "change_ava
+                                            const formData = new FormData(avatarForm);
+                                            fetch('{% url "change_avatar" %}', {
+                                                method: 'POST',
+                                                body: formData,
+                                                headers: {
+                                                    'X-CSRFToken': '{{ csrf_token }}'
+                                                }
+                                            })
+                                                .then(response => response.json())
+                                                .then(data => {
+                                                    if (data.success) {
+                                                        showToast(data.message, 'success');
+                                                    } else {
+                                                        showToast('Error updating avatar: ' + data.message, 'error');
+                                                    }
+                                                })
+                                                .catch(error => {
+                                                    console.error('Error:', error);
+                                                    showToast('Error updating avatar.', 'error');
+                                                });
+                                        }
+                                    });
+                                }
+
+                                if (deleteAvatarForm) {
+                                    deleteAvatarForm.addEventListener('submit', function (event) {
+                                        event.preventDefault();
+                                        fetch('{% url "delete_avatar" %}', {
+                                            method: 'POST',
+                                            headers: {
+                                                'X-CSRFToken': '{{ csrf_token }}',
+                                                'X-Requested-With': 'XMLHttpRequest'
+                                            }
+                                        })
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                if (data.success) {
+                                                    showFallbackAvatar();
+                                                    showToast(data.message, 'success');
+                                                } else {
+                                                    showToast('Error deleting avatar: ' + data.message, 'error');
+                                                }
+                                            })
+                                            .catch(error => {
+                                                console.error('Error:', error);
+                                                showToast('Error deleting avatar.', 'error');
+                                            });
+                                    });
+                                }
+
+                                // Handle email update
+                                const emailForm = document.getElementById('email-form');
+                                const emailInput = document.getElementById('email');
+
+                                emailForm.addEventListener('submit', function (event) {
+                                    event.preventDefault();
+                                    const formData = new FormData(emailForm);
+
+                                    fetch('{% url "update_email" %}', {
+                                        method: 'POST',  // Use POST method
+                                        body: formData,
+                                        headers: {
+                                            'X-CSRFToken': '{{ csrf_token }}',  // Include CSRF token
+                                            'X-Requested-With': 'XMLHttpRequest'
+                                        }
+                                    })
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            if (data.success) {
+                                                emailInput.value = data.new_email;  // Update the email field on success
+                                                showToast(data.message, 'success');  // Pass 'success' to showToast
+                                            } else {
+                                                showToast(data.message, 'error');  // Pass 'error' to showToast on failure
+                                            }
+                                        })
+                                        .catch(error => {
+                                            console.error('Error:', error);
+                                            showToast('An error occurred while updating the email.', 'error');
+                                        });
+                                });
+
+                                // Handle password change
+                                const passwordForm = document.getElementById('password-form');
+                                passwordForm.addEventListener('submit', function (event) {
+                                    event.preventDefault();
+                                    const formData = new FormData(passwordForm);
+
+                                    fetch('{% url "update_password" %}', {
+                                        method: 'POST',  // Use POST method
+                                        body: formData,
+                                        headers: {
+                                            'X-CSRFToken': '{{ csrf_token }}',  // Include CSRF token
+                                            'X-Requested-With': 'XMLHttpRequest'
+                                        }
+                                    })
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            if (data.success) {
+                                                showToast(data.message, 'successfully updated password');
+                                                passwordForm.reset();  // Reset the form on success
+                                            } else {
+                                                showToast(data.message, 'error encountered while updating password');
+                                            }
+                                        })
+                                        .catch(error => {
+                                            console.error('Error:', error);
+                                            showToast('An error occurred while updating the password.', 'error');
+                                        });
+                                });
+                                // ... existing showToast function ...
+                            });
+                            function showToast(message, type = 'error') {
+                                const toast = document.getElementById('toast-notification');
+                                const toastMessage = document.getElementById('toast-message');
+                                const toastIcon = document.getElementById('toast-icon');
+
+                                // Set message
+                                toastMessage.textContent = message;
+
+                                // Set icon and colors based on type
+                                if (type === 'success') {
+                                    toastIcon.className = 'inline-flex font-bold items-center justify-center flex-shrink-0 w-8 h-8 text-green-500 bg-green-100 rounded-lg dark:bg-green-800 dark:text-green-200';
+                                    toastMessage.className = 'ml-3 text-sm font-bold text-gray-900 dark:text-white'; // Darker, bold text for success
+                                    toastIcon.innerHTML = `
+                    <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/>
+                    </svg>`;
+                                } else {
+                                    toastIcon.className = 'inline-flex font-bold items-center justify-center flex-shrink-0 w-8 h-8 text-red-500 bg-red-100 rounded-lg dark:bg-red-800 dark:text-red-200';
+                                    toastMessage.className = 'ml-3 text-sm font-bold text-gray-500 dark:text-gray-400'; // Normal styling for errors
+                                    toastIcon.innerHTML = `
+                    <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM10 15a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm1-4a1 1 0 0 1-2 0V6a1 1 0 0 1 2 0v5Z"/>
+                    </svg>`;
+            }
+            
+            // Show toast
+            toast.style.display = 'flex';
+            setTimeout(() => {
+                toast.style.transform = 'translate(-50%, 0)';
+            }, 100);
+
+            // Auto hide after 5 seconds
+            setTimeout(() => {
+                hideToast();
+            }, 3000);
+        }
+
+                            function hideToast() {
+                                const toast = document.getElementById('toast-notification');
+                                toast.style.transform = 'translate(-50%, -100%)';
+                                setTimeout(() => {
+                                    toast.style.display = 'none';
+                                }, 2000);
+                            }
+
+                            // Close button handler
+                            document.querySelector('[data-dismiss-target="#toast-notification"]').addEventListener('click', hideToast);
+
+                            document.addEventListener('DOMContentLoaded', function () {
+                                const togglePasswordIcons = document.querySelectorAll('.toggle-password');
+
+                                togglePasswordIcons.forEach(icon => {
+                                    icon.addEventListener('click', function () {
+                                        const passwordField = document.querySelector(this.getAttribute('toggle'));
+                                        const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+                                        passwordField.setAttribute('type', type);
+
+                                        // Toggle the icon class between 'fa-eye' and 'fa-eye-slash'
+                                        this.classList.toggle('fa-eye');
+                                        this.classList.toggle('fa-eye-slash');
+                                    });
+                                });
+                            });
+
+                        </script>
+                        {% endblock %}
+</body>
+{% endblock %}
