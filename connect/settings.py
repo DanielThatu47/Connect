@@ -34,7 +34,8 @@ DEBUG = True
 ALLOWED_HOSTS = [
     'connect-gf04.onrender.com',
     '0.0.0.0',
-    '.now.sh',  # Keep the existing ones
+    '.now.sh',
+    '.vercel.app', 
 ]
 
 
